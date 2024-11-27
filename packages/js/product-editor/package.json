@@ -66,7 +66,7 @@
 		"@wordpress/i18n": "wp-6.0",
 		"@wordpress/icons": "10.6.0",
 		"@wordpress/interface": "wp-6.0",
-		"@wordpress/keyboard-shortcuts": "wp-6.0",
+		"@wordpress/keyboard-shortcuts": "wp-6.4",
 		"@wordpress/keycodes": "wp-6.0",
 		"@wordpress/media-utils": "wp-6.0",
 		"@wordpress/plugins": "wp-6.0",
