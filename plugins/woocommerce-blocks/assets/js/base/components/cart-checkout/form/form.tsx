@@ -5,6 +5,7 @@ import {
 	ValidatedTextInput,
 	type ValidatedTextInputHandle,
 	CheckboxControl,
+	ValidatedCheckboxControl,
 } from '@woocommerce/blocks-components';
 import {
 	BillingCountryInput,
@@ -174,17 +175,29 @@ const Form = < T extends AddressFormValues | ContactFormValues >( {
 				}
 
 				if ( field.type === 'checkbox' ) {
+					const checkboxProps = {
+						checked: Boolean( values[ field.key ] ),
+						onChange: ( checked: boolean ) => {
+							onChange( {
+								...values,
+								[ field.key ]: checked,
+							} );
+						},
+						...checkboxFieldProps,
+					};
+					if ( field.required ) {
+						return (
+							<ValidatedCheckboxControl
+								key={ field.key }
+								{ ...checkboxProps }
+							/>
+						);
+					}
+
 					return (
 						<CheckboxControl
 							key={ field.key }
-							checked={ Boolean( values[ field.key ] ) }
-							onChange={ ( checked: boolean ) => {
-								onChange( {
-									...values,
-									[ field.key ]: checked,
-								} );
-							} }
-							{ ...checkboxFieldProps }
+							{ ...checkboxProps }
 						/>
 					);
 				}
