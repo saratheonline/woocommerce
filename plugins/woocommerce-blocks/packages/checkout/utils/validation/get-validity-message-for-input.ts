@@ -4,17 +4,24 @@
 import { __, sprintf } from '@wordpress/i18n';
 
 const defaultValidityMessage =
-	( label: string | undefined ) =>
+	( label: string | undefined, inputElement: HTMLInputElement ) =>
 	( validity: ValidityState ): string | undefined => {
 		const fieldLabel = label
 			? label.toLowerCase()
 			: __( 'field', 'woocommerce' );
 
-		const invalidFieldMessage = sprintf(
+		let invalidFieldMessage = sprintf(
 			/* translators: %s field label */
 			__( 'Please enter a valid %s', 'woocommerce' ),
 			fieldLabel
 		);
+
+		if ( inputElement.type === 'checkbox' ) {
+			invalidFieldMessage = __(
+				'Please check this box if you want to proceed.',
+				'woocommerce'
+			);
+		}
 
 		if (
 			validity.valueMissing ||
@@ -42,7 +49,7 @@ const getValidityMessageForInput = (
 	}
 
 	const validityMessageCallback =
-		customValidityMessage || defaultValidityMessage( label );
+		customValidityMessage || defaultValidityMessage( label, inputElement );
 
 	return (
 		validityMessageCallback( inputElement.validity ) ||
