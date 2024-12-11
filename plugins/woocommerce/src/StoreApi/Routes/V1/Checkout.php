@@ -151,6 +151,7 @@ class Checkout extends AbstractCartRoute {
 				if ( $this->order ) {
 					wc_release_stock_for_order( $this->order );
 				}
+				$response = $this->error_to_response( $response );
 			}
 		}
 
