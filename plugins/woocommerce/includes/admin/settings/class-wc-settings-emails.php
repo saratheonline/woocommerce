@@ -48,6 +48,10 @@ class WC_Settings_Emails extends WC_Settings_Page {
 		add_action( 'woocommerce_admin_field_email_preview', array( $this, 'email_preview' ) );
 		add_action( 'woocommerce_admin_field_email_image_url', array( $this, 'email_image_url' ) );
 		add_action( 'woocommerce_admin_field_email_font_family', array( $this, 'email_font_family' ) );
+		add_action( 'woocommerce_admin_field_email_color_palette', array( $this, 'email_color_palette' ) );
+		if ( FeaturesUtil::feature_is_enabled( 'email_improvements' ) ) {
+			add_action( 'woocommerce_email_settings_after', array( $this, 'email_preview_single' ) );
+		}
 		parent::__construct();
 	}
 
@@ -102,11 +106,14 @@ class WC_Settings_Emails extends WC_Settings_Page {
 		$footer_text_description = __( 'The text to appear in the footer of all WooCommerce emails.', 'woocommerce' ) . ' ' . sprintf( __( 'Available placeholders: %s', 'woocommerce' ), '{site_title} {site_url}' );
 		$footer_text_default     = '{site_title} &mdash; Built with {WooCommerce}';
 
-		$base_color_default        = BrandingController::get_default_email_base_color();
-		$bg_color_default          = '#f7f7f7';
-		$body_bg_color_default     = '#ffffff';
-		$body_text_color_default   = '#3c3c3c';
-		$footer_text_color_default = '#3c3c3c';
+		// These defaults should be chosen by the same logic as the other color option properties.
+		list(
+			'base_color_default' => $base_color_default,
+			'bg_color_default' => $bg_color_default,
+			'body_bg_color_default' => $body_bg_color_default,
+			'body_text_color_default' => $body_text_color_default,
+			'footer_text_color_default' => $footer_text_color_default,
+		) = $this->get_email_default_colors();
 
 		$base_color_title = __( 'Base color', 'woocommerce' );
 		/* translators: %s: default color */
@@ -169,21 +176,6 @@ class WC_Settings_Emails extends WC_Settings_Page {
 			$footer_text_description = __( 'This text will appear in the footer of all of your WooCommerce emails.', 'woocommerce' ) . ' ' . sprintf( __( 'Available placeholders: %s', 'woocommerce' ), '{site_title} {site_url} {store_address} {store_email}' );
 			$footer_text_default     = '{site_title}<br />{store_address}';
 
-			$base_color_default        = '#8526ff';
-			$bg_color_default          = '#ffffff';
-			$body_bg_color_default     = '#ffffff';
-			$body_text_color_default   = '#1e1e1e';
-			$footer_text_color_default = '#787c82';
-
-			if ( wc_current_theme_is_fse_theme() && function_exists( 'wp_get_global_styles' ) ) {
-				$global_styles             = wp_get_global_styles( array(), array( 'transforms' => array( 'resolve-variables' ) ) );
-				$base_color_default        = $global_styles['elements']['button']['color']['text'] ?? $base_color_default;
-				$bg_color_default          = $global_styles['color']['background'] ?? $bg_color_default;
-				$body_bg_color_default     = $global_styles['color']['background'] ?? $body_bg_color_default;
-				$body_text_color_default   = $global_styles['color']['text'] ?? $body_text_color_default;
-				$footer_text_color_default = $global_styles['elements']['caption']['color']['text'] ?? $footer_text_color_default;
-			}
-
 			$base_color_title = __( 'Accent', 'woocommerce' );
 			/* translators: %s: default color */
 			$base_color_desc = sprintf( __( 'Customize the color of your buttons and links. Default %s.', 'woocommerce' ), '<code>' . $base_color_default . '</code>' );
@@ -206,7 +198,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 
 			$color_palette_section_header = array(
 				'title' => __( 'Color palette', 'woocommerce' ),
-				'type'  => 'title',
+				'type'  => 'email_color_palette',
 				'id'    => 'email_color_palette',
 			);
 
@@ -216,7 +208,7 @@ class WC_Settings_Emails extends WC_Settings_Page {
 			);
 		}
 
-		// Reorder email color settings based on the email_improvements feature flag
+		// Reorder email color settings based on the email_improvements feature flag.
 
 		$base_color_setting = array(
 			'title'    => $base_color_title,
@@ -431,6 +423,42 @@ class WC_Settings_Emails extends WC_Settings_Page {
 	}
 
 	/**
+	 * Get default colors for emails.
+	 */
+	private function get_email_default_colors() {
+		$base_color_default        = BrandingController::get_default_email_base_color();
+		$bg_color_default          = '#f7f7f7';
+		$body_bg_color_default     = '#ffffff';
+		$body_text_color_default   = '#3c3c3c';
+		$footer_text_color_default = '#3c3c3c';
+
+		if ( FeaturesUtil::feature_is_enabled( 'email_improvements' ) ) {
+			$base_color_default        = '#8526ff';
+			$bg_color_default          = '#ffffff';
+			$body_bg_color_default     = '#ffffff';
+			$body_text_color_default   = '#1e1e1e';
+			$footer_text_color_default = '#787c82';
+
+			if ( wc_current_theme_is_fse_theme() && function_exists( 'wp_get_global_styles' ) ) {
+				$global_styles             = wp_get_global_styles( array(), array( 'transforms' => array( 'resolve-variables' ) ) );
+				$base_color_default        = $global_styles['elements']['button']['color']['text'] ?? $base_color_default;
+				$bg_color_default          = $global_styles['color']['background'] ?? $bg_color_default;
+				$body_bg_color_default     = $global_styles['color']['background'] ?? $body_bg_color_default;
+				$body_text_color_default   = $global_styles['color']['text'] ?? $body_text_color_default;
+				$footer_text_color_default = $global_styles['elements']['caption']['color']['text'] ?? $footer_text_color_default;
+			}
+		}
+
+		return compact(
+			'base_color_default',
+			'bg_color_default',
+			'body_bg_color_default',
+			'body_text_color_default',
+			'footer_text_color_default',
+		);
+	}
+
+	/**
 	 * Get custom fonts for emails.
 	 */
 	public function get_custom_fonts() {
@@ -604,9 +632,8 @@ class WC_Settings_Emails extends WC_Settings_Page {
 		$email_types = array();
 		foreach ( $emails as $type => $email ) {
 			$email_types[] = array(
-				'label'   => $email->get_title(),
-				'value'   => $type,
-				'subject' => $email->get_default_subject(),
+				'label' => $email->get_title(),
+				'value' => $type,
 			);
 		}
 		?>
@@ -615,6 +642,35 @@ class WC_Settings_Emails extends WC_Settings_Page {
 			data-preview-url="<?php echo esc_url( wp_nonce_url( admin_url( '?preview_woocommerce_mail=true' ), 'preview-mail' ) ); ?>"
 			data-email-types="<?php echo esc_attr( wp_json_encode( $email_types ) ); ?>"
 		></div>
+		<?php
+	}
+
+	/**
+	 * Creates the React mount point for the single email preview.
+	 *
+	 * @param object $email The email object to run the method on.
+	 */
+	public function email_preview_single( $email ) {
+		// Email types array should have a single entry for current email.
+		$email_types = array(
+			array(
+				'label' => $email->get_title(),
+				'value' => get_class( $email ),
+			),
+		);
+		?>
+		<h2><?php echo esc_html( __( 'Email preview', 'woocommerce' ) ); ?></h2>
+
+		<p><?php echo esc_html( __( 'Preview your email template. You can also test on different devices and send yourself a test email.', 'woocommerce' ) ); ?></p>
+		<div>
+			<div
+				id="wc_settings_email_preview_slotfill"
+				data-preview-url="<?php echo esc_url( wp_nonce_url( admin_url( '?preview_woocommerce_mail=true' ), 'preview-mail' ) ); ?>"
+				data-email-types="<?php echo esc_attr( wp_json_encode( $email_types ) ); ?>"
+			></div>
+			<input type="hidden" id="woocommerce_email_from_name" value="<?php echo esc_attr( get_option( 'woocommerce_email_from_name' ) ); ?>" />
+			<input type="hidden" id="woocommerce_email_from_address" value="<?php echo esc_attr( get_option( 'woocommerce_email_from_address' ) ); ?>" />
+		</div>
 		<?php
 	}
 
@@ -718,6 +774,26 @@ class WC_Settings_Emails extends WC_Settings_Page {
 				</select>
 			</td>
 		</tr>
+		<?php
+	}
+
+	/**
+	 * Creates the React mount point for the email color palette title.
+	 *
+	 * @param array $value Field value array.
+	 */
+	public function email_color_palette( $value ) {
+		$default_colors = $this->get_email_default_colors();
+
+		?>
+		<h2 class="wc-settings-email-color-palette-title"><?php echo esc_html( $value['title'] ); ?></h2>
+		<div
+			class="wc-settings-email-color-palette-buttons"
+			id="wc_settings_email_color_palette_slotfill"
+			data-default-colors="<?php echo esc_attr( wp_json_encode( $default_colors ) ); ?>"
+			<?php echo wp_theme_has_theme_json() ? 'data-has-theme-json' : ''; ?>
+		></div>
+		<table class="form-table">
 		<?php
 	}
 }
