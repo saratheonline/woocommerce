@@ -146,6 +146,11 @@ $wc-setting-email-preview-gap: 16px;
 	font-weight: normal;
 	line-height: 21px;
 	margin: 0 0 $wc-setting-email-preview-gap;
+
+	&::before {
+		// Zero-width space to prevent jumping when subject is async loaded
+		content: "\200b";
+	}
 }
 
 .wc-settings-email-preview-header-data {
@@ -229,4 +234,15 @@ $wc-setting-email-preview-gap: 16px;
 			box-shadow: none;
 		}
 	}
+}
+
+.wc-settings-email-color-palette-title {
+	display: inline-block;
+	margin-right: 15px;
+}
+
+.wc-settings-email-color-palette-buttons {
+	align-items: center;
+	display: inline-flex;
+	gap: 12px;
 }
