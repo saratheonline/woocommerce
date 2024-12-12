@@ -549,6 +549,7 @@ class PaymentsRestControllerIntegrationTest extends WC_REST_Unit_Test_Case {
 			array(
 				'id'                => 'promo-discount__wc_settings_payments',
 				'promo_id'          => 'promo-discount',
+				'title'             => 'Save X% on processing fees.',
 				'description'       => 'Use the native payments solution built and supported by Woo.',
 				'short_description' => 'Save X% on processing fees.',
 				'cta_label'         => 'Save X%',
@@ -587,6 +588,7 @@ class PaymentsRestControllerIntegrationTest extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'enabled', $provider['state'], 'Provider (gateway) `state[enabled]` entry is missing' );
 		$this->assertArrayHasKey( 'needs_setup', $provider['state'], 'Provider (gateway) `state[needs_setup]` entry is missing' );
 		$this->assertArrayHasKey( 'test_mode', $provider['state'], 'Provider (gateway) `state[test_mode]` entry is missing' );
+		$this->assertArrayHasKey( 'dev_mode', $provider['state'], 'Provider (gateway) `state[dev_mode]` entry is missing' );
 		$this->assertArrayHasKey( 'management', $provider, 'Provider (gateway) `management` entry is missing' );
 		$this->assertArrayHasKey( 'settings_url', $provider['management'], 'Provider (gateway) `management[settings_url]` entry is missing' );
 		$this->assertArrayHasKey( 'onboarding', $provider, 'Provider (gateway) `onboarding` entry is missing' );
@@ -620,6 +622,7 @@ class PaymentsRestControllerIntegrationTest extends WC_REST_Unit_Test_Case {
 			array(
 				'id'                => 'promo-discount__wc_settings_payments',
 				'promo_id'          => 'promo-discount',
+				'title'             => 'Save X% on processing fees.',
 				'description'       => 'Use the native payments solution built and supported by Woo.',
 				'short_description' => 'Save X% on processing fees.',
 				'cta_label'         => 'Save X%',
@@ -667,6 +670,7 @@ class PaymentsRestControllerIntegrationTest extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'enabled', $provider['state'], 'Provider (gateway) `state[enabled]` entry is missing' );
 		$this->assertArrayHasKey( 'needs_setup', $provider['state'], 'Provider (gateway) `state[needs_setup]` entry is missing' );
 		$this->assertArrayHasKey( 'test_mode', $provider['state'], 'Provider (gateway) `state[test_mode]` entry is missing' );
+		$this->assertArrayHasKey( 'dev_mode', $provider['state'], 'Provider (gateway) `state[dev_mode]` entry is missing' );
 		$this->assertArrayHasKey( 'management', $provider, 'Provider (gateway) `management` entry is missing' );
 		$this->assertArrayHasKey( 'settings_url', $provider['management'], 'Provider (gateway) `management[settings_url]` entry is missing' );
 		$this->assertArrayHasKey( 'onboarding', $provider, 'Provider (gateway) `onboarding` entry is missing' );

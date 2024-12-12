@@ -33,10 +33,13 @@ export { PaymentGateway } from './payment-gateways/types';
 export {
 	OfflinePaymentGateway,
 	PaymentProvider,
+	PaymentProviderType,
+	PaymentIncentive,
 	SuggestedPaymentExtension,
 	SuggestedPaymentExtensionCategory,
 	EnableGatewayResponse,
 	PaymentGatewayLink,
+	RecommendedPaymentMethod,
 } from './payment-settings/types';
 export { ShippingMethod } from './shipping-methods/types';
 
