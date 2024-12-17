@@ -27,10 +27,10 @@ const isBlockifiedAddToCart = getSettingWithCoercion(
 	isBoolean
 );
 
-export const shouldRegisterBlock =
+export const shouldBlockifiedAddtoCartWithOptionsBeRegistered =
 	isExperimentalBlocksEnabled() && isBlockifiedAddToCart;
 
-if ( shouldRegisterBlock ) {
+if ( shouldBlockifiedAddtoCartWithOptionsBeRegistered ) {
 	// Register the store
 	registerStore();
 
