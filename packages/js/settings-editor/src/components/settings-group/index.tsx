@@ -3,7 +3,6 @@
  */
 /* eslint-disable @woocommerce/dependency-group */
 import { createElement } from '@wordpress/element';
-// @ts-expect-error missing types.
 import { __experimentalHeading as Heading } from '@wordpress/components';
 import { sanitize } from 'dompurify';
 /* eslint-enable @woocommerce/dependency-group */
